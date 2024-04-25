@@ -1,0 +1,135 @@
+<title>Ice Hockey Animation</title>
+<style>
+  canvas {
+    display: block;
+    background-color: #99ccff;
+  }
+</style>
+  <canvas id="myCanvas"></canvas>
+
+  <script>
+    // getting the canvas elemtns
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+
+    // canvas width and height
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Player Properties 
+    var player = {
+      x: canvas.width / 3,
+      y: canvas.height / 2,
+      width: 50,
+      height: 100
+    };
+    // Puck Properties
+    var puck = {
+      x: canvas.width / 3,
+      y: canvas.height / 2,
+      startX: canvas.width / 3,
+      startY: canvas.height / 2,
+      radius: 10,
+      speedX: 4,
+      speedY: 0,
+      inNet: false
+    };
+
+    // net 
+    var net = {
+      x: canvas.width - 100,
+      y: canvas.height / 2 - 50,
+      width: 100,
+      height: 100
+    };
+
+    //ice hockey player
+    function drawPlayer() {
+
+      ctx.fillStyle = "#ffcc99";
+      ctx.beginPath();
+      ctx.arc(player.x + player.width / 2, player.y + player.height / 2, player.height / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffcc99";
+      ctx.beginPath();
+      ctx.arc(player.x + player.width / 2, player.y + player.height / 6, player.height / 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = "#ffcc99";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(player.x, player.y + player.height / 2);
+      ctx.lineTo(player.x - player.height / 2, player.y + player.height / 3);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(player.x + player.width, player.y + player.height / 2);
+      ctx.lineTo(player.x + player.width + player.height / 2, player.y + player.height / 3);
+      ctx.stroke();
+      // player number
+      ctx.fillStyle = "#000000";
+      ctx.font = "24px Arial";
+      ctx.fillText("10", player.x + player.width / 2 - 8, player.y + player.height / 2 + 8);
+    }
+
+    // puck
+    function drawPuck() {
+      ctx.fillStyle = "#000000";
+      ctx.beginPath();
+      ctx.arc(puck.x, puck.y, puck.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    //hockey stick 
+    function drawStick() {
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(player.x + player.width / 2, player.y + player.height / 2);
+      ctx.lineTo(puck.startX, puck.startY);
+      ctx.stroke();
+    }
+
+    // Net
+    function drawNet() {
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 4;
+
+      ctx.strokeRect(net.x, net.y, net.width, net.height);
+
+      for (var i = net.y; i <= net.y + net.height; i += 10) {
+        ctx.beginPath();
+        ctx.moveTo(net.x, i);
+        ctx.lineTo(net.x + net.width, i);
+        ctx.stroke();
+      }
+    }
+
+
+    function update() {
+
+      puck.x += puck.speedX;
+
+
+      if (puck.x + puck.radius >= net.x) {
+        puck.inNet = true;
+
+        puck.x = puck.startX;
+        puck.y = puck.startY;
+      }
+
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+      drawNet();
+
+      drawPlayer();
+
+      drawPuck();
+
+      drawStick();
+      requestAnimationFrame(update);
+    }
+    update();
+  </script>
